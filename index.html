@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Be My Valentine 💖</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: 'Comic Sans MS', cursive;
+        overflow: hidden;
+    }
+
+    .container {
+        background: white;
+        padding: 30px;
+        border-radius: 20px;
+        text-align: center;
+        width: 90%;
+        max-width: 360px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        position: relative;
+    }
+
+    h1 {
+        color: #ff4d6d;
+        font-size: 26px;
+        min-height: 60px;
+    }
+
+    p {
+        font-size: 16px;
+        color: #444;
+        margin-bottom: 25px;
+    }
+
+    .buttons {
+        position: relative;
+        height: 50px;
+    }
+
+    button {
+        padding: 12px 24px;
+        font-size: 16px;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+#yesBtn {
+    background: #ff4d6d;
+    color: white;
+}
+
+#noBtn {
+    background: #eee;
+    color: #555;
+    position: relative;   /* start aligned */
+}
+
+
+    .shake {
+        animation: shake 1s;
+    }
+
+    @keyframes shake {
+        0% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        50% { transform: translateX(5px); }
+        75% { transform: translateX(-5px); }
+        100% { transform: translateX(0); }
+    }
+
+    .heart {
+        position: fixed;
+        bottom: -20px;
+        font-size: 20px;
+        animation: floatUp 4s linear infinite;
+    }
+
+    @keyframes floatUp {
+        0% { transform: translateY(0); opacity: 1; }
+        100% { transform: translateY(-100vh); opacity: 0; }
+    }
+
+    .confetti {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        animation: fall 3s linear forwards;
+    }
+
+    @keyframes fall {
+        to {
+            transform: translateY(100vh) rotate(360deg);
+            opacity: 0;
+        }
+    }
+
+    .result {
+        display: none;
+    }
+
+    .result img {
+        width: 260px;
+        margin-top: 20px;
+        border-radius: 15px;
+    }
+  
+.letter::after {
+    content:"💖 💕 💘";
+    position:absolute;
+    top:-20px;
+    left:50%;
+    transform:translateX(-50%);
+    opacity:0;
+    transition:0.5s;
+}
+
+.letter:hover::after {
+    opacity:1;
+    top:-40px;
+}
+.envelope {
+    width: 280px;
+    height: 200px;
+    background: #ffe5ec;
+    border-radius: 12px;
+    position: relative;
+    cursor: pointer;
+    perspective: 1000px;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+}
+.letterPaper {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 0;
+    background: #fff;
+    border-radius: 0 0 12px 12px;
+    overflow: hidden;
+    transition: height 0.8s;
+    z-index: 2;
+}
+.flap {
+    position: absolute;
+    width: 100%;
+    height: 110%;
+    background: #ffb3c6;
+    border-radius: 12px;
+    transform-origin:top;
+    transition: transform 0.8s;
+    z-index: 2.5;
+}
+.letterContent {
+    padding: 20px;
+    height: 260px;
+    overflow-y: auto; /* ✅ SCROLL */
+    font-size: 14px;
+    color: #444;
+}
+
+.envelope.open .flap {
+    transform: rotateX(180deg);
+}
+
+.envelope.open .letterPaper {
+    height: 260px;
+}
+
+
+</style>
+</head>
+
+<body>
+
+<!-- 🎶 Love Music -->
+<audio id="bgMusic" loop>
+    <source src="https://cdn.pixabay.com/audio/2022/02/23/audio_1b6c5d7c9b.mp3
+" type="audio/mpeg">
+</audio>
+
+
+<!-- 🔊 Sound Effects -->
+<audio id="hoverSound">
+    <source src="https://cdn.pixabay.com/audio/2021/10/25/audio_1fdb0a6b8d.mp3
+">
+</audio>
+
+<audio id="yesSound">
+    <source src="">
+</audio>
+
+<div class="container" id="proposalBox">
+    <h1 id="typingText"></h1>
+    <p>My heart already chose you… 💘</p>
+
+    <div class="buttons">
+        <button id="yesBtn">YES 💕</button>
+        <button id="noBtn">NO 😕</button>
+    </div>
+</div>
+
+<div class="container result" id="resultBox">
+    <h1>WE ARE OFFICIAL 💖</h1>
+    <p>You & Me = Forever 🥰</p>
+    <img src="https://media.giphy.com/media/3oriO6qJiXajN0TyDu/giphy.gif">
+    <button id="comeWithMeBtn" style="
+        display:none;
+        margin-top:20px;
+        padding:12px 24px;
+        border:none;
+        border-radius:25px;
+        background:#ff4d6d;
+        color:white;
+        font-size:16px;
+        cursor:pointer;">
+        Come w/ Me 💕
+    </button>
+</div>
+<div class="container" id="secretPage" style="display:none;">
+    <h1 class="typeSecret"></h1>
+    <div style="font-size:40px;margin:15px;">🤫💖</div>
+
+    <div style="position:relative;">
+        <div id="loveHoverText" style="
+            position:absolute;
+            top:-25px;
+            width:100%;
+            text-align:center;
+            color:#ff4d6d;
+            display:none;">
+            Love U 💘
+        </div>
+
+        <button id="comeBtn" style="
+            padding:12px 26px;
+            border:none;
+            border-radius:25px;
+            background:#ff4d6d;
+            color:white;
+            cursor:pointer;">
+            Come 💖
+        </button>
+    </div>
+</div>
+<div class="container" id="letterPage" style="display:none;">
+    <div class="envelope" id="envelope">
+        <div class="flap"></div>
+        <div class="letterPaper">
+            <div class="letterContent">
+                <h3>My Love 💖</h3>
+                <p>
+                    From the moment you came into my life,<br><br>
+                    everything felt softer, brighter, warmer 💕<br><br>
+
+                    This letter carries my heart,
+                    every smile I save just for you,
+                    every dream where it’s always us 🥰<br><br>
+
+                    I may not always find the perfect words,
+                    but my love for you is simple and pure,
+                    honest and endless ❤️<br><br>
+
+                    Scroll slowly… there’s more 💌<br><br>
+
+                    No matter where life takes us,
+                    I choose you — today, tomorrow,
+                    and in every lifetime 💘<br><br>
+
+                    Forever yours,<br>
+                    💞
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    const text = "Will you be my Valentine? 💌";
+    let index = 0;
+    const typingText = document.getElementById("typingText");
+
+    function typeEffect() {
+        if (index < text.length) {
+            typingText.innerHTML += text.charAt(index);
+            index++;
+            setTimeout(typeEffect, 80);
+        }
+    }
+    typeEffect();
+
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const proposalBox = document.getElementById("proposalBox");
+    const resultBox = document.getElementById("resultBox");
+    const bgMusic = document.getElementById("bgMusic");
+    const hoverSound = document.getElementById("hoverSound");
+    const yesSound = document.getElementById("yesSound");
+
+  let noCount = 0;
+const noTexts = [
+    "NO 😕",
+    "NO 😟 Please 😢",
+    "NO 😭 Please 😭"
+];
+
+let escapedOnce = false;
+
+noBtn.addEventListener("mouseenter", () => {
+    // Change text
+    noCount++;
+    noBtn.innerText = noTexts[Math.min(noCount - 1, noTexts.length - 1)];
+
+    // Shake
+    noBtn.classList.add("shake");
+    setTimeout(() => noBtn.classList.remove("shake"), 300);
+
+    // After first hover, detach from layout
+    if (!escapedOnce) {
+        escapedOnce = true;
+
+        const rect = noBtn.getBoundingClientRect();
+
+        noBtn.style.position = "fixed";
+        noBtn.style.left = rect.left + "px";
+        noBtn.style.top = rect.top + "px";
+        noBtn.style.zIndex = "9999";
+    }
+
+    moveNoInsideWindow();
+});
+
+function moveNoInsideWindow() {
+    const btnW = noBtn.offsetWidth;
+    const btnH = noBtn.offsetHeight;
+
+    const padding = 16;
+
+    const maxX = window.innerWidth - btnW - padding;
+    const maxY = window.innerHeight - btnH - padding;
+
+    const minX = padding;
+    const minY = padding;
+
+    // ✅ SAFE random position (never off-screen)
+    const x = Math.random() * (maxX - minX) + minX;
+    const y = Math.random() * (maxY - minY) + minY;
+
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+}
+
+
+
+    yesBtn.addEventListener("click", () => {
+        yesSound.play();
+        proposalBox.style.display = "none";
+        resultBox.style.display = "block";
+        hearts();
+        confetti();
+    });
+
+    function hearts() {
+        setInterval(() => {
+            const h = document.createElement("div");
+            h.className = "heart";
+            h.innerHTML = "❤️";
+            h.style.left = Math.random() * 100 + "vw";
+            document.body.appendChild(h);
+            setTimeout(() => h.remove(), 4000);
+        }, 200);
+    }
+
+    function confetti() {
+        for (let i = 0; i < 150; i++) {
+            const c = document.createElement("div");
+            c.className = "confetti";
+            c.style.left = Math.random() * 100 + "vw";
+            c.style.background = `hsl(${Math.random() * 360},100%,50%)`;
+            c.style.animationDuration = Math.random() * 2 + 2 + "s";
+            document.body.appendChild(c);
+            setTimeout(() => c.remove(), 3000);
+        }
+    }
+
+    yesBtn.addEventListener("click", () => {
+    yesSound.play();
+
+    proposalBox.style.display = "none";
+    resultBox.style.display = "block";
+
+    hearts();
+    confetti();
+
+    // ⏳ Show button AFTER a small delay (feels intentional & cute)
+    setTimeout(() => {
+        document.getElementById("comeWithMeBtn").style.display = "inline-block";
+    }, 1200);
+});
+
+document.getElementById("comeWithMeBtn").onclick = () => {
+    document.getElementById("resultBox").style.display = "none";
+    document.getElementById("secretPage").style.display = "block";
+};
+
+
+const secretText = "I have a secret to say… 💌";
+let s = 0;
+const typeBox = document.querySelector(".typeSecret");
+
+function typeSecret() {
+    if (s < secretText.length) {
+        typeBox.innerHTML += secretText.charAt(s++);
+        setTimeout(typeSecret, 90);
+    }
+}
+
+document.getElementById("comeWithMeBtn").addEventListener("click", () => {
+    setTimeout(typeSecret, 300);
+});
+
+const loveText = document.getElementById("loveHoverText");
+const comeBtn = document.getElementById("comeBtn");
+
+comeBtn.onmouseenter = () => loveText.style.display = "block";
+comeBtn.onmouseleave = () => loveText.style.display = "none";
+
+comeBtn.onclick = () => {
+    document.getElementById("secretPage").style.display = "none";
+    document.getElementById("letterPage").style.display = "block";
+};
+const envelope = document.getElementById("envelope");
+let letterOpened = false;
+
+function openLetter() {
+    if (letterOpened) return;
+    letterOpened = true;
+
+    envelope.classList.add("open");
+
+    // 💖 heart burst
+    for (let i = 0; i < 6; i++) {
+        const heart = document.createElement("div");
+        heart.className = "letter-heart";
+        heart.innerHTML = "❤️";
+        heart.style.left = 40 + i * 30 + "px";
+        heart.style.top = "80px";
+        envelope.appendChild(heart);
+
+        setTimeout(() => heart.remove(), 2000);
+    }
+}
+
+envelope.addEventListener("mouseenter", openLetter);
+envelope.addEventListener("click", openLetter); // mobile support
+
+const music = document.getElementById("bgMusic");
+music.volume = 0.4;
+
+</script>
+
+</body>
+</html>
