@@ -68,8 +68,7 @@
 #noBtn {
     background: #eee;
     color: #555;
-    position: fixed;  
-    z-index: 9999;/* start aligned */
+    position: relative;   /* start aligned */
 }
 
     .shake {
@@ -313,46 +312,38 @@
     const hoverSound = document.getElementById("hoverSound");
     const yesSound = document.getElementById("yesSound");
 
-let noCount = 0;
+  let noCount = 0;
 const noTexts = [
     "NO 😕",
-    "NO 😟 Please 😢",
+    "NO 😟 R U Shuree.. 😢",
     "NO 😭 Please 😭"
 ];
 
-function moveNoButton() {
+let escapedOnce = false;
+
+noBtn.addEventListener("mouseenter", () => {
+    // Change text
     noCount++;
     noBtn.innerText = noTexts[Math.min(noCount - 1, noTexts.length - 1)];
 
+    // Shake
     noBtn.classList.add("shake");
     setTimeout(() => noBtn.classList.remove("shake"), 300);
 
-    const btnW = noBtn.offsetWidth;
-    const btnH = noBtn.offsetHeight;
-    const padding = 16;
+    // After first hover, detach from layout
+    if (!escapedOnce) {
+        escapedOnce = true;
 
-    const maxX = window.innerWidth - btnW - padding;
-    const maxY = window.innerHeight - btnH - padding;
+        const rect = noBtn.getBoundingClientRect();
 
-    const minX = padding;
-    const minY = padding;
+        noBtn.style.position = "fixed";
+        noBtn.style.left = rect.left + "px";
+        noBtn.style.top = rect.top + "px";
+        noBtn.style.zIndex = "9999";
+    }
 
-    const x = Math.random() * (maxX - minX) + minX;
-    const y = Math.random() * (maxY - minY) + minY;
-
-    noBtn.style.left = x + "px";
-    noBtn.style.top = y + "px";
-}
-
-/* Desktop */
-noBtn.addEventListener("mouseenter", moveNoButton);
-
-/* Mobile (THIS FIXES IT) */
-noBtn.addEventListener("touchstart", (e) => {
-    e.preventDefault();   // 👈 very important
-    moveNoButton();
+    moveNoInsideWindow();
 });
-
 
 function moveNoInsideWindow() {
     const btnW = noBtn.offsetWidth;
@@ -383,6 +374,10 @@ function moveNoInsideWindow() {
         hearts();
         confetti();
     });
+    noBtn.addEventListener("touchstart", (e) => {
+    e.preventDefault();   // 👈 very important
+    moveNoButton();
+});
 
     function hearts() {
         setInterval(() => {
