@@ -70,7 +70,10 @@
     color: #555;
     position: relative;   /* start aligned */
 }
-
+#noBtn {
+    position: fixed;
+    z-index: 9999;
+}
 
     .shake {
         animation: shake 1s;
@@ -313,38 +316,46 @@
     const hoverSound = document.getElementById("hoverSound");
     const yesSound = document.getElementById("yesSound");
 
-  let noCount = 0;
+let noCount = 0;
 const noTexts = [
     "NO 😕",
     "NO 😟 Please 😢",
     "NO 😭 Please 😭"
 ];
 
-let escapedOnce = false;
-
-noBtn.addEventListener("mouseenter", () => {
-    // Change text
+function moveNoButton() {
     noCount++;
     noBtn.innerText = noTexts[Math.min(noCount - 1, noTexts.length - 1)];
 
-    // Shake
     noBtn.classList.add("shake");
     setTimeout(() => noBtn.classList.remove("shake"), 300);
 
-    // After first hover, detach from layout
-    if (!escapedOnce) {
-        escapedOnce = true;
+    const btnW = noBtn.offsetWidth;
+    const btnH = noBtn.offsetHeight;
+    const padding = 16;
 
-        const rect = noBtn.getBoundingClientRect();
+    const maxX = window.innerWidth - btnW - padding;
+    const maxY = window.innerHeight - btnH - padding;
 
-        noBtn.style.position = "fixed";
-        noBtn.style.left = rect.left + "px";
-        noBtn.style.top = rect.top + "px";
-        noBtn.style.zIndex = "9999";
-    }
+    const minX = padding;
+    const minY = padding;
 
-    moveNoInsideWindow();
+    const x = Math.random() * (maxX - minX) + minX;
+    const y = Math.random() * (maxY - minY) + minY;
+
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+}
+
+/* Desktop */
+noBtn.addEventListener("mouseenter", moveNoButton);
+
+/* Mobile (THIS FIXES IT) */
+noBtn.addEventListener("touchstart", (e) => {
+    e.preventDefault();   // 👈 very important
+    moveNoButton();
 });
+
 
 function moveNoInsideWindow() {
     const btnW = noBtn.offsetWidth;
