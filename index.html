@@ -72,6 +72,14 @@
     user-select: none;  /* 👈 IMPORTANT FOR MOBILE */
     z-index: 9999;
 }
+#noBtn {
+    touch-action: none;
+}
+
+#yesBtn {
+    touch-action: manipulation; /* 👈 ensures click works on mobile */
+}
+
 
     .shake {
         animation: shake 1s;
@@ -314,7 +322,7 @@
     const hoverSound = document.getElementById("hoverSound");
     const yesSound = document.getElementById("yesSound");
 
-  let noCount = 0;
+ let noCount = 0;
 const noTexts = [
     "NO 😕",
     "NO 😟 R U Shuree.. 😢",
@@ -323,14 +331,16 @@ const noTexts = [
 
 let escapedOnce = false;
 
-function escapeNoButton() {
+function escapeNoButton(e) {
+    e.stopPropagation(); // 👈 stops affecting YES
+    e.preventDefault();  // 👈 stops NO click only
+
     noCount++;
     noBtn.innerText = noTexts[Math.min(noCount - 1, noTexts.length - 1)];
 
     noBtn.classList.add("shake");
     setTimeout(() => noBtn.classList.remove("shake"), 300);
 
-    // Switch to fixed once
     if (!escapedOnce) {
         escapedOnce = true;
         const rect = noBtn.getBoundingClientRect();
@@ -344,36 +354,16 @@ function escapeNoButton() {
     const btnH = noBtn.offsetHeight;
     const padding = 16;
 
-    const maxX = window.innerWidth - btnW - padding;
-    const maxY = window.innerHeight - btnH - padding;
-
-    const minX = padding;
-    const minY = padding;
-
-    const x = Math.random() * (maxX - minX) + minX;
-    const y = Math.random() * (maxY - minY) + minY;
+    const x = Math.random() * (window.innerWidth - btnW - padding * 2) + padding;
+    const y = Math.random() * (window.innerHeight - btnH - padding * 2) + padding;
 
     noBtn.style.left = x + "px";
     noBtn.style.top = y + "px";
 }
 
-/* 🔑 ONE EVENT THAT WORKS EVERYWHERE */
-noBtn.addEventListener("pointerdown", (e) => {
-    e.preventDefault();   // stops click
-    escapeNoButton();
-});
+/* 🔑 ONE EVENT – WORKS ON MOBILE + DESKTOP */
+noBtn.addEventListener("pointerdown", escapeNoButton);
 
-    yesBtn.addEventListener("click", () => {
-        yesSound.play();
-        proposalBox.style.display = "none";
-        resultBox.style.display = "block";
-        hearts();
-        confetti();
-    });
-    noBtn.addEventListener("touchstart", (e) => {
-    e.preventDefault();   // 👈 very important
-    moveNoButton();
-});
 
     function hearts() {
         setInterval(() => {
@@ -398,8 +388,9 @@ noBtn.addEventListener("pointerdown", (e) => {
         }
     }
 
-    yesBtn.addEventListener("click", () => {
-    yesSound.play();
+   yesBtn.addEventListener("click", () => {
+    bgMusic.play().catch(()=>{});
+    yesSound.play().catch(()=>{});
 
     proposalBox.style.display = "none";
     resultBox.style.display = "block";
@@ -407,9 +398,8 @@ noBtn.addEventListener("pointerdown", (e) => {
     hearts();
     confetti();
 
-    // ⏳ Show button AFTER a small delay (feels intentional & cute)
     setTimeout(() => {
-        document.getElementById("comeWithMeBtn").style.display = "inline-block";
+        document.getElementById("comeWithMeBtn").style.display = "block";
     }, 1200);
 });
 
