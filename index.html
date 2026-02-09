@@ -189,6 +189,22 @@
 .envelope.open .letterPaper {
     height: 260px;
 }
+#comeWithMeBtn {
+    display: none;            /* hidden initially */
+    margin: 20px auto 0;      /* 👈 centers horizontally */
+    padding: 12px 26px;
+    border: none;
+    border-radius: 25px;
+    background: #ff4d6d;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Optional: hover effect */
+#comeWithMeBtn:hover {
+    transform: scale(1.05);
+}
 
 
 </style>
@@ -227,18 +243,10 @@
     <h1>WE ARE OFFICIAL 💖</h1>
     <p>You & Me = Forever 🥰</p>
     <img src="https://media.giphy.com/media/3oriO6qJiXajN0TyDu/giphy.gif">
-    <button id="comeWithMeBtn" style="
-        display:none;
-        margin-top:20px;
-        padding:12px 24px;
-        border:none;
-        border-radius:25px;
-        background:#ff4d6d;
-        color:white;
-        font-size:16px;
-        cursor:pointer;">
-        Come w/ Me 💕
-    </button>
+    <button id="comeWithMeBtn">
+    Come w/ Me 💕
+</button>
+
 </div>
 <div class="container" id="secretPage" style="display:none;">
     <h1 class="typeSecret"></h1>
@@ -272,6 +280,9 @@
         <div class="letterPaper">
             <div class="letterContent">
                 <h3>My Love 💖</h3>
+                <p style="font-weight:bold; margin-top:10px;">
+        I opened my heart just for you 💌
+    </p>
                 <p>
                     From the moment you came into my life,<br><br>
                     everything felt softer, brighter, warmer 💕<br><br>
