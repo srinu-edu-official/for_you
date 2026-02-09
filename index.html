@@ -68,7 +68,8 @@
     background: #eee;
     color: #555;
     position: relative;
-    touch-action: none;   /* 👈 IMPORTANT FOR MOBILE */
+    touch-action: none;   /* 👈 allows repeated pointer events */
+    user-select: none;  /* 👈 IMPORTANT FOR MOBILE */
     z-index: 9999;
 }
 
@@ -329,7 +330,7 @@ function escapeNoButton() {
     noBtn.classList.add("shake");
     setTimeout(() => noBtn.classList.remove("shake"), 300);
 
-    // Convert to fixed ONLY once
+    // Switch to fixed once
     if (!escapedOnce) {
         escapedOnce = true;
         const rect = noBtn.getBoundingClientRect();
@@ -356,15 +357,11 @@ function escapeNoButton() {
     noBtn.style.top = y + "px";
 }
 
-/* Desktop */
-noBtn.addEventListener("mouseenter", escapeNoButton);
-
-/* Mobile (THIS is the key fix) */
-noBtn.addEventListener("touchstart", (e) => {
-    e.preventDefault(); // prevents click
+/* 🔑 ONE EVENT THAT WORKS EVERYWHERE */
+noBtn.addEventListener("pointerdown", (e) => {
+    e.preventDefault();   // stops click
     escapeNoButton();
 });
-
 
     yesBtn.addEventListener("click", () => {
         yesSound.play();
