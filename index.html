@@ -364,7 +364,13 @@ function moveNoInsideWindow() {
     noBtn.style.left = x + "px";
     noBtn.style.top = y + "px";
 }
+noBtn.addEventListener("mouseenter", moveNoButton);
 
+/* Mobile (THIS FIXES IT) */
+noBtn.addEventListener("touchstart", (e) => {
+    e.preventDefault();   // 👈 very important
+    moveNoButton();
+});
 
 
     yesBtn.addEventListener("click", () => {
