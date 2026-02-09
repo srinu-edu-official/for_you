@@ -64,12 +64,12 @@
     background: #ff4d6d;
     color: white;
 }
-
 #noBtn {
     background: #eee;
     color: #555;
-    position: relative; 
-    z-index: 9999;  /* start aligned */
+    position: relative;
+    touch-action: none;   /* 👈 IMPORTANT FOR MOBILE */
+    z-index: 9999;
 }
 
     .shake {
@@ -322,34 +322,25 @@ const noTexts = [
 
 let escapedOnce = false;
 
-noBtn.addEventListener("mouseenter", () => {
-    // Change text
+function escapeNoButton() {
     noCount++;
     noBtn.innerText = noTexts[Math.min(noCount - 1, noTexts.length - 1)];
 
-    // Shake
     noBtn.classList.add("shake");
     setTimeout(() => noBtn.classList.remove("shake"), 300);
 
-    // After first hover, detach from layout
+    // Convert to fixed ONLY once
     if (!escapedOnce) {
         escapedOnce = true;
-
         const rect = noBtn.getBoundingClientRect();
-
         noBtn.style.position = "fixed";
         noBtn.style.left = rect.left + "px";
         noBtn.style.top = rect.top + "px";
         noBtn.style.zIndex = "9999";
     }
 
-    moveNoInsideWindow();
-});
-
-function moveNoInsideWindow() {
     const btnW = noBtn.offsetWidth;
     const btnH = noBtn.offsetHeight;
-
     const padding = 16;
 
     const maxX = window.innerWidth - btnW - padding;
@@ -358,19 +349,20 @@ function moveNoInsideWindow() {
     const minX = padding;
     const minY = padding;
 
-    // ✅ SAFE random position (never off-screen)
     const x = Math.random() * (maxX - minX) + minX;
     const y = Math.random() * (maxY - minY) + minY;
 
     noBtn.style.left = x + "px";
     noBtn.style.top = y + "px";
 }
-noBtn.addEventListener("mouseenter", moveNoButton);
 
-/* Mobile (THIS FIXES IT) */
+/* Desktop */
+noBtn.addEventListener("mouseenter", escapeNoButton);
+
+/* Mobile (THIS is the key fix) */
 noBtn.addEventListener("touchstart", (e) => {
-    e.preventDefault();   // 👈 very important
-    moveNoButton();
+    e.preventDefault(); // prevents click
+    escapeNoButton();
 });
 
 
